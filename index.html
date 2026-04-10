@@ -1,80 +1,816 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
-    <title>NYC Retro Photobooth</title>
-    <link
-      rel="stylesheet"
-      href="style.css"
-    />
-  </head>
-  <body>
-    <div class="page">
-      <header class="site-header">
-        <div class="marquee-tag">Soho Studio • Lower East Side • Brooklyn</div>
-        <h1 class="title">
-          NYC
-          <span>PHOTOBOOTH</span>
-        </h1>
-        <p class="subtitle">Polaroid-style snapshots • 5-frame strip • Made for late nights</p>
-      </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lovers in New York Photobooth</title>
 
-      <main class="booth-shell">
-        <section class="booth">
+  <style>
+    @font-face {
+      font-family: "Lovers in New York";
+      src: url("fonts/LoversInNewYork-Regular.woff2") format("woff2"),
+           url("fonts/LoversInNewYork-Regular.woff") format("woff");
+      font-display: swap;
+    }
+
+    @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap");
+
+    :root {
+      --pink-bg: #f7e7ec;
+      --pink-panel: #f4d9e2;
+      --pink-soft: #f8eef2;
+      --rose: #d88aa3;
+      --rose-deep: #b95f82;
+      --cream: #fffaf8;
+      --ink: #433237;
+      --line: rgba(94, 61, 71, 0.16);
+      --shadow: 0 18px 50px rgba(126, 82, 96, 0.18);
+      --radius-xl: 34px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.55), transparent 30%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255,0.2) 0px,
+          rgba(255,255,255,0.2) 1px,
+          transparent 1px,
+          transparent 24px
+        ),
+        linear-gradient(180deg, #f8eaf0 0%, #f3dfe7 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.12;
+      mix-blend-mode: multiply;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      z-index: 100;
+    }
+
+    .page {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 34px 22px 42px;
+    }
+
+    .site-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .marquee-tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      letter-spacing: 0.22em;
+      text-transform: lowercase;
+      padding: 10px 16px;
+      border: 1px solid rgba(95, 58, 74, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(10px);
+      margin-bottom: 18px;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Lovers in New York", "Cormorant Garamond", serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .title span {
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .subtitle {
+      margin: 14px auto 0;
+      max-width: 560px;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: rgba(67, 50, 55, 0.76);
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr);
+      gap: 26px;
+      align-items: start;
+    }
+
+    .booth-shell,
+    .strip-panel {
+      position: relative;
+      background: rgba(255,255,255,0.34);
+      border: 1px solid rgba(95, 58, 74, 0.15);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+
+    .booth-shell::before,
+    .strip-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.45), transparent 20%),
+        linear-gradient(0deg, rgba(255,255,255,0.22), transparent 24%);
+      z-index: 0;
+    }
+
+    .booth-inner,
+    .strip-inner {
+      position: relative;
+      z-index: 1;
+      padding: 24px;
+    }
+
+    .booth-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .label-main {
+      display: block;
+      font-family: "Lovers in New York", "Cormorant Garamond", serif;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .label-sub {
+      display: block;
+      font-size: 0.92rem;
+      color: rgba(67, 50, 55, 0.72);
+      letter-spacing: 0.02em;
+    }
+
+    .shutter-button,
+    .ghost-button {
+      border: none;
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+    }
+
+    .shutter-button {
+      background: linear-gradient(180deg, #fff8fb 0%, #f4d8e2 100%);
+      color: var(--ink);
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 8px 18px rgba(153, 96, 121, 0.16);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .shutter-button:hover:not(:disabled),
+    .ghost-button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .shutter-button:disabled,
+    .ghost-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .shutter-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--rose-deep);
+      box-shadow: 0 0 0 6px rgba(185, 95, 130, 0.12);
+    }
+
+    .booth-window {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(0,0,0,0.15)),
+        #4b3f46;
+      aspect-ratio: 4 / 5;
+      min-height: 420px;
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
+    }
+
+    #camera,
+    #snapshotCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #31292d;
+      filter:
+        sepia(0.14)
+        saturate(0.86)
+        contrast(1.02)
+        brightness(1.04)
+        hue-rotate(-6deg);
+    }
+
+    .pink-tint {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 225, 236, 0.16), rgba(255, 214, 232, 0.1)),
+        rgba(255, 196, 220, 0.14);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .grain-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.16;
+      mix-blend-mode: soft-light;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      z-index: 3;
+    }
+
+    .frame-overlay {
+      position: absolute;
+      inset: 12px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .overlay-text {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.35);
+      backdrop-filter: blur(10px);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: lowercase;
+      z-index: 5;
+    }
+
+    .status-indicator {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(12px);
+      font-size: 0.86rem;
+      z-index: 5;
+    }
+
+    .status-indicator .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #d7678d;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.65; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .booth-bottom {
+      margin-top: 18px;
+    }
+
+    .small-print {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      text-transform: lowercase;
+      letter-spacing: 0.09em;
+      color: rgba(67, 50, 55, 0.72);
+      margin-bottom: 16px;
+    }
+
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ghost-button {
+      background: rgba(255,255,255,0.52);
+      color: var(--ink);
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(102, 65, 76, 0.14);
+    }
+
+    .strip-panel {
+      min-height: 100%;
+    }
+
+    .strip-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .strip-title {
+      margin: 0;
+      font-family: "Lovers in New York", "Cormorant Garamond", serif;
+      font-size: 2rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .strip-caption {
+      margin: 0;
+      color: rgba(67, 50, 55, 0.72);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .thumbnail-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .thumb-card {
+      background: rgba(255,255,255,0.52);
+      border: 1px solid rgba(95, 58, 74, 0.1);
+      border-radius: 20px;
+      padding: 12px;
+    }
+
+    .thumb-card img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      box-shadow: 0 8px 18px rgba(111, 79, 88, 0.14);
+    }
+
+    .thumb-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: rgba(67, 50, 55, 0.7);
+    }
+
+    .thumb-download {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--rose-deep);
+      font-size: 0.82rem;
+      padding: 0;
+    }
+
+    .empty-note {
+      padding: 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.48);
+      border: 1px dashed rgba(97, 65, 74, 0.18);
+      text-align: center;
+      color: rgba(67, 50, 55, 0.65);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .site-footer {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 0.88rem;
+      color: rgba(67, 50, 55, 0.68);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .booth-window {
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        padding: 22px 14px 28px;
+      }
+
+      .booth-inner,
+      .strip-inner {
+        padding: 18px;
+      }
+
+      .thumbnail-row {
+        grid-template-columns: 1fr;
+      }
+
+      .small-print {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="marquee-tag">soho • late nights • soft memories</div>
+      <h1 class="title">lovers in<br><span>new york</span></h1>
+      <p class="subtitle">photobooth moments you’ll want to keep forever</p>
+    </header>
+
+    <main class="main-layout">
+      <section class="booth-shell">
+        <div class="booth-inner">
           <div class="booth-top">
             <div class="booth-label">
-              <span class="label-main">Instant Portraits</span>
-              <span class="label-sub">$5 • 3 poses • 1 night in the city</span>
+              <span class="label-main">photo booth</span>
+              <span class="label-sub">3 poses • no retakes • just you</span>
             </div>
-            <button id="shutterBtn" class="shutter-button" disabled>
-              TAKE PHOTO
+
+            <button id="captureBtn" class="shutter-button" disabled>
+              capture ♡
               <span class="shutter-dot"></span>
             </button>
           </div>
 
           <div class="booth-window">
-            <video id="camera" autoplay playsinline></video>
-            <canvas id="frame" class="hidden"></canvas>
-            <div class="viewfinder-overlay">
-              <span class="overlay-text">POSE • CLICK • KEEP</span>
-            </div>
+            <video id="camera" autoplay playsinline muted></video>
+            <canvas id="snapshotCanvas" class="hidden"></canvas>
+            <div class="pink-tint"></div>
+            <div class="grain-overlay"></div>
+            <div class="frame-overlay"></div>
+            <div class="overlay-text">pose • kiss • look away</div>
+
             <div class="status-indicator">
               <span class="dot"></span>
-              <span id="statusText">Connecting to camera…</span>
+              <span id="statusText">getting ready…</span>
             </div>
           </div>
 
           <div class="booth-bottom">
             <div class="small-print">
-              <span>NEW YORK • EST. 1984</span>
-              <span>NO RETAKES • NO REGRETS</span>
+              <span>new york • 2am</span>
+              <span>no retakes • just feelings</span>
             </div>
 
             <div class="controls-row">
-              <button id="clearBtn" class="ghost-button" disabled>Clear Strip</button>
-              <button id="downloadAllBtn" class="ghost-button" disabled>Download Strip</button>
+              <button id="clearBtn" class="ghost-button" disabled>clear strip</button>
+              <button id="downloadStripBtn" class="ghost-button" disabled>download strip</button>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <aside class="film-strip-area">
-          <h2 class="strip-title">Tonight's Strip</h2>
-          <p class="strip-caption">Up to five frames • Old film vibes • Click to download any shot</p>
-          <div id="thumbnails" class="thumbnail-row" aria-live="polite"></div>
-        </aside>
-      </main>
+      <aside class="strip-panel">
+        <div class="strip-inner">
+          <h2 class="strip-title">your strip</h2>
+          <p class="strip-caption">a few moments you didn’t plan</p>
 
-      <footer class="site-footer">
-        <span>NYC Retro Photobooth</span>
-        <span>Built for desktop browsers with camera access</span>
-      </footer>
-    </div>
+          <div id="thumbnails" class="thumbnail-row"></div>
 
-    <script src="script.js"></script>
-  </body>
+          <div id="emptyNote" class="empty-note">
+            your polaroid-style strip will appear here after you capture three frames ♡
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <span>lovers in new york</span>
+      <span>made for soft nights & blurry memories</span>
+    </footer>
+  </div>
+
+  <script>
+    const video = document.getElementById("camera");
+    const snapshotCanvas = document.getElementById("snapshotCanvas");
+    const captureBtn = document.getElementById("captureBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const downloadStripBtn = document.getElementById("downloadStripBtn");
+    const statusText = document.getElementById("statusText");
+    const thumbnails = document.getElementById("thumbnails");
+    const emptyNote = document.getElementById("emptyNote");
+
+    const frames = [];
+    let mediaStream = null;
+
+    async function setupCamera() {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+            width: { ideal: 1080 },
+            height: { ideal: 1350 }
+          },
+          audio: false
+        });
+
+        video.srcObject = mediaStream;
+        await video.play();
+
+        captureBtn.disabled = false;
+        statusText.textContent = "ready ♡";
+      } catch (error) {
+        console.error(error);
+        statusText.textContent = "camera access unavailable";
+      }
+    }
+
+    function drawStylizedFrame() {
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+
+      if (!width || !height) return null;
+
+      snapshotCanvas.width = width;
+      snapshotCanvas.height = height;
+
+      const ctx = snapshotCanvas.getContext("2d");
+
+      // base frame
+      ctx.drawImage(video, 0, 0, width, height);
+
+      // soft pink tint
+      ctx.fillStyle = "rgba(255, 208, 224, 0.12)";
+      ctx.fillRect(0, 0, width, height);
+
+      // soft cream haze
+      const grad = ctx.createLinearGradient(0, 0, 0, height);
+      grad.addColorStop(0, "rgba(255,247,244,0.18)");
+      grad.addColorStop(1, "rgba(255,232,240,0.06)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // subtle vignette
+      const radial = ctx.createRadialGradient(
+        width / 2,
+        height / 2,
+        Math.min(width, height) * 0.2,
+        width / 2,
+        height / 2,
+        Math.max(width, height) * 0.7
+      );
+      radial.addColorStop(0, "rgba(255,255,255,0)");
+      radial.addColorStop(1, "rgba(62,35,43,0.12)");
+      ctx.fillStyle = radial;
+      ctx.fillRect(0, 0, width, height);
+
+      // film grain
+      const grainDensity = Math.floor((width * height) / 5500);
+      for (let i = 0; i < grainDensity; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const alpha = Math.random() * 0.05;
+        const size = Math.random() * 1.4;
+        ctx.fillStyle = `rgba(80, 58, 65, ${alpha})`;
+        ctx.fillRect(x, y, size, size);
+      }
+
+      return snapshotCanvas.toDataURL("image/png");
+    }
+
+    function updateButtons() {
+      const hasFrames = frames.length > 0;
+      clearBtn.disabled = !hasFrames;
+      downloadStripBtn.disabled = frames.length !== 3;
+    }
+
+    function renderThumbnails() {
+      thumbnails.innerHTML = "";
+
+      if (frames.length === 0) {
+        emptyNote.classList.remove("hidden");
+      } else {
+        emptyNote.classList.add("hidden");
+      }
+
+      frames.forEach((frameSrc, index) => {
+        const card = document.createElement("div");
+        card.className = "thumb-card";
+
+        const img = document.createElement("img");
+        img.src = frameSrc;
+        img.alt = `Photobooth frame ${index + 1}`;
+
+        const meta = document.createElement("div");
+        meta.className = "thumb-meta";
+
+        const label = document.createElement("span");
+        label.textContent = `frame 0${index + 1}`;
+
+        const btn = document.createElement("button");
+        btn.className = "thumb-download";
+        btn.textContent = "save";
+        btn.addEventListener("click", () => downloadSingleFrame(frameSrc, index));
+
+        meta.appendChild(label);
+        meta.appendChild(btn);
+
+        card.appendChild(img);
+        card.appendChild(meta);
+        thumbnails.appendChild(card);
+      });
+
+      updateButtons();
+    }
+
+    function downloadSingleFrame(src, index) {
+      const link = document.createElement("a");
+      link.href = src;
+      link.download = `lovers-in-new-york-frame-${index + 1}.png`;
+      link.click();
+    }
+
+    function captureFrame() {
+      if (frames.length >= 3) return;
+
+      const frame = drawStylizedFrame();
+      if (!frame) return;
+
+      frames.push(frame);
+      renderThumbnails();
+
+      statusText.textContent =
+        frames.length < 3
+          ? `${frames.length}/3 captured…`
+          : "strip ready ♡";
+
+      if (frames.length >= 3) {
+        captureBtn.disabled = true;
+      }
+    }
+
+    function clearFrames() {
+      frames.length = 0;
+      captureBtn.disabled = false;
+      statusText.textContent = "ready ♡";
+      renderThumbnails();
+    }
+
+    function downloadStrip() {
+      if (frames.length !== 3) return;
+
+      const stripCanvas = document.createElement("canvas");
+      const ctx = stripCanvas.getContext("2d");
+
+      const frameWidth = 900;
+      const frameHeight = 1125;
+      const margin = 70;
+      const gap = 46;
+      const stripWidth = frameWidth + margin * 2;
+      const stripHeight = margin + 100 + (frameHeight * 3) + (gap * 2) + 170;
+
+      stripCanvas.width = stripWidth;
+      stripCanvas.height = stripHeight;
+
+      // paper background
+      ctx.fillStyle = "#fffaf7";
+      ctx.fillRect(0, 0, stripWidth, stripHeight);
+
+      // subtle pink wash
+      ctx.fillStyle = "rgba(244, 215, 226, 0.45)";
+      ctx.fillRect(0, 0, stripWidth, stripHeight);
+
+      // title
+      ctx.fillStyle = "#4a343b";
+      ctx.textAlign = "center";
+      ctx.font = '52px "Lovers in New York", "Cormorant Garamond", serif';
+      ctx.fillText("lovers in new york", stripWidth / 2, 78);
+
+      ctx.font = '22px "Inter", sans-serif';
+      ctx.fillStyle = "rgba(74,52,59,0.72)";
+      ctx.fillText("photobooth memories", stripWidth / 2, 112);
+
+      let loaded = 0;
+      const images = [];
+
+      frames.forEach((src, index) => {
+        const img = new Image();
+        img.onload = () => {
+          loaded += 1;
+          images[index] = img;
+
+          if (loaded === frames.length) {
+            images.forEach((image, i) => {
+              const x = margin;
+              const y = margin + 150 + i * (frameHeight + gap);
+
+              ctx.save();
+              roundRect(ctx, x, y, frameWidth, frameHeight, 26);
+              ctx.clip();
+              ctx.drawImage(image, x, y, frameWidth, frameHeight);
+              ctx.restore();
+
+              ctx.strokeStyle = "rgba(113, 80, 90, 0.12)";
+              ctx.lineWidth = 2;
+              roundRect(ctx, x, y, frameWidth, frameHeight, 26);
+              ctx.stroke();
+            });
+
+            // grain on strip
+            for (let i = 0; i < 12000; i++) {
+              const x = Math.random() * stripWidth;
+              const y = Math.random() * stripHeight;
+              const alpha = Math.random() * 0.04;
+              const size = Math.random() * 1.2;
+              ctx.fillStyle = `rgba(88, 61, 69, ${alpha})`;
+              ctx.fillRect(x, y, size, size);
+            }
+
+            // footer line
+            ctx.fillStyle = "rgba(74,52,59,0.68)";
+            ctx.font = '20px "Inter", sans-serif';
+            ctx.fillText("no retakes • just feelings", stripWidth / 2, stripHeight - 54);
+
+            const link = document.createElement("a");
+            link.href = stripCanvas.toDataURL("image/png");
+            link.download = "lovers-in-new-york-strip.png";
+            link.click();
+          }
+        };
+        img.src = src;
+      });
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    captureBtn.addEventListener("click", captureFrame);
+    clearBtn.addEventListener("click", clearFrames);
+    downloadStripBtn.addEventListener("click", downloadStrip);
+
+    renderThumbnails();
+    setupCamera();
+  </script>
+</body>
 </html>
-

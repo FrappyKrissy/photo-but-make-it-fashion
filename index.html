@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>NYC Retro Photobooth</title>
+    <link
+      rel="stylesheet"
+      href="style.css"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="marquee-tag">Soho Studio • Lower East Side • Brooklyn</div>
+        <h1 class="title">
+          NYC
+          <span>PHOTOBOOTH</span>
+        </h1>
+        <p class="subtitle">Polaroid-style snapshots • 5-frame strip • Made for late nights</p>
+      </header>
+
+      <main class="booth-shell">
+        <section class="booth">
+          <div class="booth-top">
+            <div class="booth-label">
+              <span class="label-main">Instant Portraits</span>
+              <span class="label-sub">$5 • 3 poses • 1 night in the city</span>
+            </div>
+            <button id="shutterBtn" class="shutter-button" disabled>
+              TAKE PHOTO
+              <span class="shutter-dot"></span>
+            </button>
+          </div>
+
+          <div class="booth-window">
+            <video id="camera" autoplay playsinline></video>
+            <canvas id="frame" class="hidden"></canvas>
+            <div class="viewfinder-overlay">
+              <span class="overlay-text">POSE • CLICK • KEEP</span>
+            </div>
+            <div class="status-indicator">
+              <span class="dot"></span>
+              <span id="statusText">Connecting to camera…</span>
+            </div>
+          </div>
+
+          <div class="booth-bottom">
+            <div class="small-print">
+              <span>NEW YORK • EST. 1984</span>
+              <span>NO RETAKES • NO REGRETS</span>
+            </div>
+
+            <div class="controls-row">
+              <button id="clearBtn" class="ghost-button" disabled>Clear Strip</button>
+              <button id="downloadAllBtn" class="ghost-button" disabled>Download Strip</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="film-strip-area">
+          <h2 class="strip-title">Tonight's Strip</h2>
+          <p class="strip-caption">Up to five frames • Old film vibes • Click to download any shot</p>
+          <div id="thumbnails" class="thumbnail-row" aria-live="polite"></div>
+        </aside>
+      </main>
+
+      <footer class="site-footer">
+        <span>NYC Retro Photobooth</span>
+        <span>Built for desktop browsers with camera access</span>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

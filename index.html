@@ -15,6 +15,11 @@
 
     @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap");
 
+    .title,
+    .strip-title,
+    .label-main {
+      font-family: "Cormorant Garamond", serif;
+    }
     :root {
       --pink-bg: #f7e7ec;
       --pink-panel: #f4d9e2;
@@ -39,18 +44,11 @@
       min-height: 100vh;
       font-family: "Inter", sans-serif;
       color: var(--ink);
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.8), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(255,255,255,0.55), transparent 30%),
-        repeating-linear-gradient(
-          90deg,
-          rgba(255,255,255,0.2) 0px,
-          rgba(255,255,255,0.2) 1px,
-          transparent 1px,
-          transparent 24px
-        ),
-        linear-gradient(180deg, #f8eaf0 0%, #f3dfe7 100%);
       overflow-x: hidden;
+    
+      background:
+        linear-gradient(rgba(255, 245, 247, 0.6), rgba(255, 245, 247, 0.6)),
+        url('./pink-lines.png') center/cover no-repeat fixed;
     }
 
     body::before {
@@ -578,28 +576,39 @@
     function drawStylizedFrame() {
       const width = video.videoWidth;
       const height = video.videoHeight;
-
+    
       if (!width || !height) return null;
-
+    
       snapshotCanvas.width = width;
       snapshotCanvas.height = height;
-
+    
       const ctx = snapshotCanvas.getContext("2d");
-
-      // base frame
+    
+      // draw original frame
       ctx.drawImage(video, 0, 0, width, height);
-
-      // soft pink tint
-      ctx.fillStyle = "rgba(255, 208, 224, 0.12)";
+    
+      // convert to black and white
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+    
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+    
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+    
+        data[i] = gray;
+        data[i + 1] = gray;
+        data[i + 2] = gray;
+      }
+    
+      ctx.putImageData(imageData, 0, 0);
+    
+      // soft contrast wash
+      ctx.fillStyle = "rgba(255,255,255,0.05)";
       ctx.fillRect(0, 0, width, height);
-
-      // soft cream haze
-      const grad = ctx.createLinearGradient(0, 0, 0, height);
-      grad.addColorStop(0, "rgba(255,247,244,0.18)");
-      grad.addColorStop(1, "rgba(255,232,240,0.06)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-
+    
       // subtle vignette
       const radial = ctx.createRadialGradient(
         width / 2,
@@ -607,26 +616,26 @@
         Math.min(width, height) * 0.2,
         width / 2,
         height / 2,
-        Math.max(width, height) * 0.7
+        Math.max(width, height) * 0.75
       );
       radial.addColorStop(0, "rgba(255,255,255,0)");
-      radial.addColorStop(1, "rgba(62,35,43,0.12)");
+      radial.addColorStop(1, "rgba(0,0,0,0.18)");
       ctx.fillStyle = radial;
       ctx.fillRect(0, 0, width, height);
-
+    
       // film grain
-      const grainDensity = Math.floor((width * height) / 5500);
+      const grainDensity = Math.floor((width * height) / 5000);
       for (let i = 0; i < grainDensity; i++) {
         const x = Math.random() * width;
         const y = Math.random() * height;
-        const alpha = Math.random() * 0.05;
-        const size = Math.random() * 1.4;
-        ctx.fillStyle = `rgba(80, 58, 65, ${alpha})`;
+        const alpha = Math.random() * 0.08;
+        const size = Math.random() * 1.5;
+        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
         ctx.fillRect(x, y, size, size);
       }
 
-      return snapshotCanvas.toDataURL("image/png");
-    }
+  return snapshotCanvas.toDataURL("image/png");
+}
 
     function updateButtons() {
       const hasFrames = frames.length > 0;
@@ -706,6 +715,7 @@
       renderThumbnails();
     }
 
+    
     function downloadStrip() {
       if (frames.length !== 3) return;
 
@@ -722,23 +732,23 @@
       stripCanvas.width = stripWidth;
       stripCanvas.height = stripHeight;
 
-      // paper background
-      ctx.fillStyle = "#fffaf7";
+      // strip background
+      ctx.fillStyle = "#f6f2ee";
       ctx.fillRect(0, 0, stripWidth, stripHeight);
-
-      // subtle pink wash
-      ctx.fillStyle = "rgba(244, 215, 226, 0.45)";
+      
+      // faint paper tone
+      ctx.fillStyle = "rgba(0,0,0,0.02)";
       ctx.fillRect(0, 0, stripWidth, stripHeight);
-
+      
       // title
-      ctx.fillStyle = "#4a343b";
+      ctx.fillStyle = "#2f2a2a";
       ctx.textAlign = "center";
-      ctx.font = '52px "Lovers in New York", "Cormorant Garamond", serif';
-      ctx.fillText("lovers in new york", stripWidth / 2, 78);
-
-      ctx.font = '22px "Inter", sans-serif';
-      ctx.fillStyle = "rgba(74,52,59,0.72)";
-      ctx.fillText("photobooth memories", stripWidth / 2, 112);
+      ctx.font = '46px "Cormorant Garamond", serif';
+      ctx.fillText("photobooth", stripWidth / 2, 72);
+      
+      ctx.font = '18px "Inter", sans-serif';
+      ctx.fillStyle = "rgba(47,42,42,0.7)";
+      ctx.fillText("new york memories", stripWidth / 2, 102);
 
       let loaded = 0;
       const images = [];

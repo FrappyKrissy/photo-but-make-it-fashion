@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lovers in New York Photobooth</title>
+  <title>Wildatsaintlaurent</title>
+   
+  <link href="https://db.onlinewebfonts.com/c/8dddfc4c12cf25d9913689b1969523d?family=Alte+Haas+Grotesk+Bold+V2" rel="stylesheet">
 
   <style>
-    @font-face {
-      font-family: "Lovers in New York";
-      src: url("fonts/LoversInNewYork-Regular.woff2") format("woff2"),
-           url("fonts/LoversInNewYork-Regular.woff") format("woff");
-      font-display: swap;
-    }
-
-    @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap");
-
     .title,
     .strip-title,
     .label-main {
-      font-family: "Cormorant Garamond", serif;
+      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
     }
-    :root {
+    .title {
+      margin: 0;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 0.95;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+        :root {
       --pink-bg: #f7e7ec;
       --pink-panel: #f4d9e2;
       --pink-soft: #f8eef2;
@@ -42,13 +42,16 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Inter", sans-serif;
-      color: var(--ink);
       overflow-x: hidden;
     
       background:
-        linear-gradient(rgba(255, 245, 247, 0.6), rgba(255, 245, 247, 0.6)),
-        url('./pink-lines.png') center/cover no-repeat fixed;
+        linear-gradient(rgba(255, 245, 247, 0.7), rgba(255, 245, 247, 0.7)),
+        url('./pink-lines.png');
+        
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
     body::before {
@@ -85,20 +88,6 @@
       background: rgba(255, 255, 255, 0.42);
       backdrop-filter: blur(10px);
       margin-bottom: 18px;
-    }
-
-    .title {
-      margin: 0;
-      font-family: "Lovers in New York", "Cormorant Garamond", serif;
-      font-size: clamp(3rem, 8vw, 6rem);
-      line-height: 0.95;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-
-    .title span {
-      display: inline-block;
-      margin-top: 4px;
     }
 
     .subtitle {
@@ -157,7 +146,7 @@
 
     .label-main {
       display: block;
-      font-family: "Lovers in New York", "Cormorant Garamond", serif;
+      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
       font-size: 2rem;
       line-height: 1;
       margin-bottom: 6px;
@@ -358,7 +347,7 @@
 
     .strip-title {
       margin: 0;
-      font-family: "Lovers in New York", "Cormorant Garamond", serif;
+      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
       font-size: 2rem;
       font-weight: 500;
       line-height: 1;
@@ -464,6 +453,19 @@
       .small-print {
         flex-direction: column;
       }
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    
+      background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+      opacity: 0.2;
+      mix-blend-mode: multiply;
     }
   </style>
 </head>
@@ -743,7 +745,7 @@
       // title
       ctx.fillStyle = "#2f2a2a";
       ctx.textAlign = "center";
-      ctx.font = '46px "Cormorant Garamond", serif';
+      ctx.font = '46px "Alte Haas Grotesk Bold V2", serif';
       ctx.fillText("photobooth", stripWidth / 2, 72);
       
       ctx.font = '18px "Inter", sans-serif';

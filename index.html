@@ -3,826 +3,651 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wildatsaintlaurent</title>
-   
-  <link href="https://db.onlinewebfonts.com/c/8dddfc4c12cf25d9913689b1969523d?family=Alte+Haas+Grotesk+Bold+V2" rel="stylesheet">
+  <title>WildAtSaintLaurent Photobooth</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Great+Vibes&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    .title,
-    .strip-title,
-    .label-main {
-      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
-    }
-    .title {
-      margin: 0;
-      font-size: clamp(3rem, 8vw, 6rem);
-      line-height: 0.95;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-        :root {
-      --pink-bg: #f7e7ec;
-      --pink-panel: #f4d9e2;
-      --pink-soft: #f8eef2;
-      --rose: #d88aa3;
-      --rose-deep: #b95f82;
-      --cream: #fffaf8;
-      --ink: #433237;
-      --line: rgba(94, 61, 71, 0.16);
-      --shadow: 0 18px 50px rgba(126, 82, 96, 0.18);
-      --radius-xl: 34px;
-      --radius-lg: 24px;
-      --radius-md: 18px;
+    :root {
+      --bg: #f4e9eb;
+      --pink: #d49bb0;
+      --pink-dark: #9b7280;
+      --text: #1b1b1b;
+      --shadow: 0 10px 25px rgba(103, 73, 83, 0.22);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       margin: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
-    
-      background:
-        linear-gradient(rgba(255, 245, 247, 0.7), rgba(255, 245, 247, 0.7)),
-        url('./pink-lines.png');
-        
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      font-family: "Inter", sans-serif;
     }
 
-    body::before {
-      content: "";
+    body {
+      position: relative;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      background-color: var(--bg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* -------- HOME -------- */
+    #home {
+      background-image: url("./8.png");
+    }
+
+    .home-buttons {
+      position: absolute;
+      left: 3.6%;
+      top: 69%;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .pill-btn {
+      width: 320px;
+      height: 78px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d6a0b4 0%, #c58ca2 100%);
+      box-shadow: inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -8px 12px rgba(88,49,60,0.22), var(--shadow);
+      color: #000;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+
+    .pill-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    /* -------- LAYOUTS -------- */
+    #layouts {
+      background-image: url("./9.png");
+    }
+
+    .layout-overlay {
+      position: absolute;
+      inset: 0;
+    }
+
+    .layout-hotspot {
+      position: absolute;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.0);
+      transition: background 0.2s ease, transform 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .layout-hotspot:hover,
+    .layout-hotspot.selected {
+      background: rgba(232, 205, 216, 0.28);
+      border-color: rgba(92, 55, 67, 0.25);
+      transform: scale(1.02);
+    }
+
+    /* approximate positions over your screenshot */
+    .layout-vertical-3 {
+      left: 7%;
+      top: 13%;
+      width: 25%;
+      height: 28%;
+    }
+
+    .layout-vertical-2 {
+      left: 39%;
+      top: 74%;
+      width: 22%;
+      height: 20%;
+    }
+
+    .layout-actions {
+      position: absolute;
+      right: 6%;
+      bottom: 5%;
+      display: flex;
+      gap: 14px;
+    }
+
+    .small-btn {
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    /* -------- CAMERA -------- */
+    #camera-screen {
+      background-image: url("./10.png");
+    }
+
+    .camera-ui {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* area inside the white opening of 10.png */
+    .camera-frame {
+      position: absolute;
+      left: 18%;
+      top: 11%;
+      width: 63%;
+      height: 47%;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #efe7e8;
+    }
+
+    #cameraVideo,
+    #captureCanvas {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(100%) contrast(1.08) brightness(1.03);
+    }
+
+    #captureCanvas {
+      display: none;
+    }
+
+    .camera-info {
+      position: absolute;
+      top: 62%;
+      width: 100%;
+      text-align: center;
+      color: #493d40;
+      font-size: 22px;
+      font-weight: 600;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+    }
+
+    .capture-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 7.5%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .capture-btn {
+      width: 42%;
+      max-width: 540px;
+      min-width: 260px;
+      height: 80px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d8b8bf 0%, #cda8b0 100%);
+      box-shadow: inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -8px 12px rgba(88,49,60,0.22), var(--shadow);
+      font-size: 32px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .back-mini {
+      position: absolute;
+      left: 4%;
+      top: 4%;
+    }
+
+    /* -------- RESULT -------- */
+    #result-screen {
+      background-image: url("./11.png");
+    }
+
+    .result-ui {
+      position: absolute;
+      inset: 0;
+    }
+
+    .result-strip {
+      position: absolute;
+      left: 23.7%;
+      top: 25.8%;
+      width: 11.8%;
+      transform: rotate(0.5deg);
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+      animation: dropStrip 1s ease forwards;
+    }
+
+    @keyframes dropStrip {
+      from {
+        transform: translateY(-40px) rotate(0.5deg);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) rotate(0.5deg);
+        opacity: 1;
+      }
+    }
+
+    .result-actions {
+      position: absolute;
+      right: 6%;
+      bottom: 6%;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      max-width: 360px;
+      justify-content: flex-end;
+    }
+
+    .grain {
       position: fixed;
       inset: 0;
       pointer-events: none;
       opacity: 0.12;
       mix-blend-mode: multiply;
       background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      z-index: 100;
-    }
-
-    .page {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 34px 22px 42px;
-    }
-
-    .site-header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .marquee-tag {
-      display: inline-block;
-      font-size: 0.8rem;
-      letter-spacing: 0.22em;
-      text-transform: lowercase;
-      padding: 10px 16px;
-      border: 1px solid rgba(95, 58, 74, 0.18);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.42);
-      backdrop-filter: blur(10px);
-      margin-bottom: 18px;
-    }
-
-    .subtitle {
-      margin: 14px auto 0;
-      max-width: 560px;
-      font-size: 1rem;
-      line-height: 1.65;
-      color: rgba(67, 50, 55, 0.76);
-    }
-
-    .main-layout {
-      display: grid;
-      grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr);
-      gap: 26px;
-      align-items: start;
-    }
-
-    .booth-shell,
-    .strip-panel {
-      position: relative;
-      background: rgba(255,255,255,0.34);
-      border: 1px solid rgba(95, 58, 74, 0.15);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-      overflow: hidden;
-    }
-
-    .booth-shell::before,
-    .strip-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.45), transparent 20%),
-        linear-gradient(0deg, rgba(255,255,255,0.22), transparent 24%);
-      z-index: 0;
-    }
-
-    .booth-inner,
-    .strip-inner {
-      position: relative;
-      z-index: 1;
-      padding: 24px;
-    }
-
-    .booth-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      align-items: center;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .label-main {
-      display: block;
-      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
-      font-size: 2rem;
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-
-    .label-sub {
-      display: block;
-      font-size: 0.92rem;
-      color: rgba(67, 50, 55, 0.72);
-      letter-spacing: 0.02em;
-    }
-
-    .shutter-button,
-    .ghost-button {
-      border: none;
-      cursor: pointer;
-      transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
-    }
-
-    .shutter-button {
-      background: linear-gradient(180deg, #fff8fb 0%, #f4d8e2 100%);
-      color: var(--ink);
-      padding: 14px 20px;
-      border-radius: 999px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      box-shadow: 0 8px 18px rgba(153, 96, 121, 0.16);
-      display: inline-flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .shutter-button:hover:not(:disabled),
-    .ghost-button:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-
-    .shutter-button:disabled,
-    .ghost-button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .shutter-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--rose-deep);
-      box-shadow: 0 0 0 6px rgba(185, 95, 130, 0.12);
-    }
-
-    .booth-window {
-      position: relative;
-      border-radius: 28px;
-      overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.16), rgba(0,0,0,0.15)),
-        #4b3f46;
-      aspect-ratio: 4 / 5;
-      min-height: 420px;
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
-    }
-
-    #camera,
-    #snapshotCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: #31292d;
-      filter:
-        sepia(0.14)
-        saturate(0.86)
-        contrast(1.02)
-        brightness(1.04)
-        hue-rotate(-6deg);
-    }
-
-    .pink-tint {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(255, 225, 236, 0.16), rgba(255, 214, 232, 0.1)),
-        rgba(255, 196, 220, 0.14);
-      mix-blend-mode: screen;
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .grain-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.16;
-      mix-blend-mode: soft-light;
-      background-image:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      z-index: 3;
+      z-index: 50;
     }
 
-    .frame-overlay {
-      position: absolute;
-      inset: 12px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.4);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
-      pointer-events: none;
-      z-index: 4;
-    }
-
-    .overlay-text {
-      position: absolute;
-      top: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.35);
-      backdrop-filter: blur(10px);
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
-      text-transform: lowercase;
-      z-index: 5;
-    }
-
-    .status-indicator {
-      position: absolute;
-      bottom: 18px;
-      left: 18px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.3);
-      backdrop-filter: blur(12px);
-      font-size: 0.86rem;
-      z-index: 5;
-    }
-
-    .status-indicator .dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: #d7678d;
-      animation: pulse 1.5s infinite;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.65; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .booth-bottom {
-      margin-top: 18px;
-    }
-
-    .small-print {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      font-size: 0.8rem;
-      text-transform: lowercase;
-      letter-spacing: 0.09em;
-      color: rgba(67, 50, 55, 0.72);
-      margin-bottom: 16px;
-    }
-
-    .controls-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .ghost-button {
-      background: rgba(255,255,255,0.52);
-      color: var(--ink);
-      padding: 12px 16px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      border: 1px solid rgba(102, 65, 76, 0.14);
-    }
-
-    .strip-panel {
-      min-height: 100%;
-    }
-
-    .strip-inner {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      min-height: 100%;
-    }
-
-    .strip-title {
-      margin: 0;
-      font-family: "Alte Haas Grotesk Bold V2", sans-serif;
-      font-size: 2rem;
-      font-weight: 500;
-      line-height: 1;
-    }
-
-    .strip-caption {
-      margin: 0;
-      color: rgba(67, 50, 55, 0.72);
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
-
-    .thumbnail-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .thumb-card {
-      background: rgba(255,255,255,0.52);
-      border: 1px solid rgba(95, 58, 74, 0.1);
-      border-radius: 20px;
-      padding: 12px;
-    }
-
-    .thumb-card img {
-      width: 100%;
-      aspect-ratio: 3 / 4;
-      object-fit: cover;
-      border-radius: 14px;
-      display: block;
-      box-shadow: 0 8px 18px rgba(111, 79, 88, 0.14);
-    }
-
-    .thumb-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 0.82rem;
-      color: rgba(67, 50, 55, 0.7);
-    }
-
-    .thumb-download {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--rose-deep);
-      font-size: 0.82rem;
-      padding: 0;
-    }
-
-    .empty-note {
-      padding: 22px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.48);
-      border: 1px dashed rgba(97, 65, 74, 0.18);
-      text-align: center;
-      color: rgba(67, 50, 55, 0.65);
-      line-height: 1.7;
-      font-size: 0.94rem;
-    }
-
-    .site-footer {
-      text-align: center;
-      margin-top: 22px;
-      font-size: 0.88rem;
-      color: rgba(67, 50, 55, 0.68);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 980px) {
-      .main-layout {
-        grid-template-columns: 1fr;
+    @media (max-width: 900px) {
+      .pill-btn {
+        width: 220px;
+        height: 62px;
+        font-size: 24px;
       }
 
-      .booth-window {
-        min-height: 360px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .page {
-        padding: 22px 14px 28px;
+      .capture-btn {
+        font-size: 24px;
+        height: 66px;
       }
 
-      .booth-inner,
-      .strip-inner {
-        padding: 18px;
+      .camera-info {
+        font-size: 18px;
       }
-
-      .thumbnail-row {
-        grid-template-columns: 1fr;
-      }
-
-      .small-print {
-        flex-direction: column;
-      }
-    }
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    
-      background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-      opacity: 0.2;
-      mix-blend-mode: multiply;
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <header class="site-header">
-      <div class="marquee-tag">soho • late nights • soft memories</div>
-      <h1 class="title">lovers in<br><span>new york</span></h1>
-      <p class="subtitle">photobooth moments you’ll want to keep forever</p>
-    </header>
+  <div class="grain"></div>
 
-    <main class="main-layout">
-      <section class="booth-shell">
-        <div class="booth-inner">
-          <div class="booth-top">
-            <div class="booth-label">
-              <span class="label-main">photo booth</span>
-              <span class="label-sub">3 poses • no retakes • just you</span>
-            </div>
+  <!-- HOME -->
+  <section id="home" class="screen active">
+    <div class="home-buttons">
+      <button class="pill-btn" id="startBtn">start</button>
+      <button class="pill-btn" id="layoutBtn">layout</button>
+    </div>
+  </section>
 
-            <button id="captureBtn" class="shutter-button" disabled>
-              capture ♡
-              <span class="shutter-dot"></span>
-            </button>
-          </div>
+  <!-- LAYOUTS -->
+  <section id="layouts" class="screen">
+    <div class="layout-overlay">
+      <button class="layout-hotspot layout-vertical-3 selected" id="pickVertical3" aria-label="Choose vertical 3 strip"></button>
+      <button class="layout-hotspot layout-vertical-2" id="pickVertical2" aria-label="Choose vertical 2 strip"></button>
 
-          <div class="booth-window">
-            <video id="camera" autoplay playsinline muted></video>
-            <canvas id="snapshotCanvas" class="hidden"></canvas>
-            <div class="pink-tint"></div>
-            <div class="grain-overlay"></div>
-            <div class="frame-overlay"></div>
-            <div class="overlay-text">pose • kiss • look away</div>
+      <div class="layout-actions">
+        <button class="small-btn" id="layoutBackBtn">back</button>
+        <button class="small-btn" id="layoutContinueBtn">continue</button>
+      </div>
+    </div>
+  </section>
 
-            <div class="status-indicator">
-              <span class="dot"></span>
-              <span id="statusText">getting ready…</span>
-            </div>
-          </div>
+  <!-- CAMERA -->
+  <section id="camera-screen" class="screen">
+    <button class="small-btn back-mini" id="cameraBackBtn">back</button>
 
-          <div class="booth-bottom">
-            <div class="small-print">
-              <span>new york • 2am</span>
-              <span>no retakes • just feelings</span>
-            </div>
+    <div class="camera-ui">
+      <div class="camera-frame">
+        <video id="cameraVideo" autoplay playsinline muted></video>
+        <canvas id="captureCanvas"></canvas>
+      </div>
 
-            <div class="controls-row">
-              <button id="clearBtn" class="ghost-button" disabled>clear strip</button>
-              <button id="downloadStripBtn" class="ghost-button" disabled>download strip</button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div class="camera-info" id="cameraInfo">take 3 photos</div>
 
-      <aside class="strip-panel">
-        <div class="strip-inner">
-          <h2 class="strip-title">your strip</h2>
-          <p class="strip-caption">a few moments you didn’t plan</p>
+      <div class="capture-wrap">
+        <button class="capture-btn" id="captureBtn">capture</button>
+      </div>
+    </div>
+  </section>
 
-          <div id="thumbnails" class="thumbnail-row"></div>
+  <!-- RESULT -->
+  <section id="result-screen" class="screen">
+    <div class="result-ui">
+      <img id="resultStrip" class="result-strip" alt="Final photo strip" />
 
-          <div id="emptyNote" class="empty-note">
-            your polaroid-style strip will appear here after you capture three frames ♡
-          </div>
-        </div>
-      </aside>
-    </main>
-
-    <footer class="site-footer">
-      <span>lovers in new york</span>
-      <span>made for soft nights & blurry memories</span>
-    </footer>
-  </div>
+      <div class="result-actions">
+        <button class="small-btn" id="downloadBtn">download</button>
+        <button class="small-btn" id="againBtn">again</button>
+        <button class="small-btn" id="homeBtn">home</button>
+      </div>
+    </div>
+  </section>
 
   <script>
-    const video = document.getElementById("camera");
-    const snapshotCanvas = document.getElementById("snapshotCanvas");
-    const captureBtn = document.getElementById("captureBtn");
-    const clearBtn = document.getElementById("clearBtn");
-    const downloadStripBtn = document.getElementById("downloadStripBtn");
-    const statusText = document.getElementById("statusText");
-    const thumbnails = document.getElementById("thumbnails");
-    const emptyNote = document.getElementById("emptyNote");
+    const screens = {
+      home: document.getElementById("home"),
+      layouts: document.getElementById("layouts"),
+      camera: document.getElementById("camera-screen"),
+      result: document.getElementById("result-screen")
+    };
 
-    const frames = [];
-    let mediaStream = null;
+    const startBtn = document.getElementById("startBtn");
+    const layoutBtn = document.getElementById("layoutBtn");
+    const layoutBackBtn = document.getElementById("layoutBackBtn");
+    const layoutContinueBtn = document.getElementById("layoutContinueBtn");
+    const pickVertical3 = document.getElementById("pickVertical3");
+    const pickVertical2 = document.getElementById("pickVertical2");
+    const cameraBackBtn = document.getElementById("cameraBackBtn");
+    const captureBtn = document.getElementById("captureBtn");
+    const cameraInfo = document.getElementById("cameraInfo");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const againBtn = document.getElementById("againBtn");
+    const homeBtn = document.getElementById("homeBtn");
+
+    const video = document.getElementById("cameraVideo");
+    const captureCanvas = document.getElementById("captureCanvas");
+    const resultStrip = document.getElementById("resultStrip");
+
+    let selectedLayout = "vertical3";
+    let requiredShots = 3;
+    let shots = [];
+    let stream = null;
+    let latestStrip = null;
+
+    function showScreen(name) {
+      Object.values(screens).forEach(s => s.classList.remove("active"));
+      screens[name].classList.add("active");
+    }
+
+    function updateLayoutSelection() {
+      pickVertical3.classList.toggle("selected", selectedLayout === "vertical3");
+      pickVertical2.classList.toggle("selected", selectedLayout === "vertical2");
+      requiredShots = selectedLayout === "vertical3" ? 3 : 2;
+    }
+
+    pickVertical3.addEventListener("click", () => {
+      selectedLayout = "vertical3";
+      updateLayoutSelection();
+    });
+
+    pickVertical2.addEventListener("click", () => {
+      selectedLayout = "vertical2";
+      updateLayoutSelection();
+    });
+
+    startBtn.addEventListener("click", async () => {
+      await startCameraFlow();
+    });
+
+    layoutBtn.addEventListener("click", () => {
+      showScreen("layouts");
+    });
+
+    layoutBackBtn.addEventListener("click", () => {
+      showScreen("home");
+    });
+
+    layoutContinueBtn.addEventListener("click", async () => {
+      await startCameraFlow();
+    });
+
+    cameraBackBtn.addEventListener("click", async () => {
+      stopCamera();
+      showScreen("home");
+    });
+
+    againBtn.addEventListener("click", async () => {
+      await startCameraFlow();
+    });
+
+    homeBtn.addEventListener("click", async () => {
+      stopCamera();
+      showScreen("home");
+    });
+
+    async function startCameraFlow() {
+      shots = [];
+      updateLayoutSelection();
+      showScreen("camera");
+      cameraInfo.textContent = `take ${requiredShots} photo${requiredShots > 1 ? "s" : ""}`;
+      await setupCamera();
+    }
 
     async function setupCamera() {
+      stopCamera();
+
       try {
-        mediaStream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: "user",
             width: { ideal: 1080 },
-            height: { ideal: 1350 }
+            height: { ideal: 1440 }
           },
           audio: false
         });
 
-        video.srcObject = mediaStream;
+        video.srcObject = stream;
         await video.play();
-
-        captureBtn.disabled = false;
-        statusText.textContent = "ready ♡";
-      } catch (error) {
-        console.error(error);
-        statusText.textContent = "camera access unavailable";
+      } catch (err) {
+        cameraInfo.textContent = "camera access unavailable";
+        console.error(err);
       }
     }
 
-    function drawStylizedFrame() {
-      const width = video.videoWidth;
-      const height = video.videoHeight;
-    
-      if (!width || !height) return null;
-    
-      snapshotCanvas.width = width;
-      snapshotCanvas.height = height;
-    
-      const ctx = snapshotCanvas.getContext("2d");
-    
-      // draw original frame
-      ctx.drawImage(video, 0, 0, width, height);
-    
-      // convert to black and white
-      const imageData = ctx.getImageData(0, 0, width, height);
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+    }
+
+    function captureShot() {
+      if (!video.videoWidth || !video.videoHeight) return null;
+
+      captureCanvas.width = video.videoWidth;
+      captureCanvas.height = video.videoHeight;
+
+      const ctx = captureCanvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
+
+      const imageData = ctx.getImageData(0, 0, captureCanvas.width, captureCanvas.height);
       const data = imageData.data;
-    
+
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
-    
         const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-    
+
         data[i] = gray;
         data[i + 1] = gray;
         data[i + 2] = gray;
       }
-    
+
       ctx.putImageData(imageData, 0, 0);
-    
-      // soft contrast wash
-      ctx.fillStyle = "rgba(255,255,255,0.05)";
-      ctx.fillRect(0, 0, width, height);
-    
-      // subtle vignette
-      const radial = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        Math.min(width, height) * 0.2,
-        width / 2,
-        height / 2,
-        Math.max(width, height) * 0.75
+
+      const vignette = ctx.createRadialGradient(
+        captureCanvas.width / 2,
+        captureCanvas.height / 2,
+        Math.min(captureCanvas.width, captureCanvas.height) * 0.2,
+        captureCanvas.width / 2,
+        captureCanvas.height / 2,
+        Math.max(captureCanvas.width, captureCanvas.height) * 0.75
       );
-      radial.addColorStop(0, "rgba(255,255,255,0)");
-      radial.addColorStop(1, "rgba(0,0,0,0.18)");
-      ctx.fillStyle = radial;
-      ctx.fillRect(0, 0, width, height);
-    
-      // film grain
-      const grainDensity = Math.floor((width * height) / 5000);
+      vignette.addColorStop(0, "rgba(255,255,255,0)");
+      vignette.addColorStop(1, "rgba(0,0,0,0.18)");
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0, 0, captureCanvas.width, captureCanvas.height);
+
+      const grainDensity = Math.floor((captureCanvas.width * captureCanvas.height) / 5000);
       for (let i = 0; i < grainDensity; i++) {
-        const x = Math.random() * width;
-        const y = Math.random() * height;
+        const x = Math.random() * captureCanvas.width;
+        const y = Math.random() * captureCanvas.height;
         const alpha = Math.random() * 0.08;
-        const size = Math.random() * 1.5;
+        const size = Math.random() * 1.4;
         ctx.fillStyle = `rgba(0,0,0,${alpha})`;
         ctx.fillRect(x, y, size, size);
       }
 
-  return snapshotCanvas.toDataURL("image/png");
-}
-
-    function updateButtons() {
-      const hasFrames = frames.length > 0;
-      clearBtn.disabled = !hasFrames;
-      downloadStripBtn.disabled = frames.length !== 3;
+      return captureCanvas.toDataURL("image/png");
     }
 
-    function renderThumbnails() {
-      thumbnails.innerHTML = "";
+    captureBtn.addEventListener("click", async () => {
+      const shot = captureShot();
+      if (!shot) return;
 
-      if (frames.length === 0) {
-        emptyNote.classList.remove("hidden");
+      shots.push(shot);
+
+      if (shots.length < requiredShots) {
+        cameraInfo.textContent = `${shots.length}/${requiredShots} captured`;
       } else {
-        emptyNote.classList.add("hidden");
+        cameraInfo.textContent = "processing...";
+        stopCamera();
+        latestStrip = await buildStrip(shots, selectedLayout);
+        resultStrip.src = latestStrip;
+        showScreen("result");
       }
+    });
 
-      frames.forEach((frameSrc, index) => {
-        const card = document.createElement("div");
-        card.className = "thumb-card";
-
-        const img = document.createElement("img");
-        img.src = frameSrc;
-        img.alt = `Photobooth frame ${index + 1}`;
-
-        const meta = document.createElement("div");
-        meta.className = "thumb-meta";
-
-        const label = document.createElement("span");
-        label.textContent = `frame 0${index + 1}`;
-
-        const btn = document.createElement("button");
-        btn.className = "thumb-download";
-        btn.textContent = "save";
-        btn.addEventListener("click", () => downloadSingleFrame(frameSrc, index));
-
-        meta.appendChild(label);
-        meta.appendChild(btn);
-
-        card.appendChild(img);
-        card.appendChild(meta);
-        thumbnails.appendChild(card);
-      });
-
-      updateButtons();
-    }
-
-    function downloadSingleFrame(src, index) {
-      const link = document.createElement("a");
-      link.href = src;
-      link.download = `lovers-in-new-york-frame-${index + 1}.png`;
-      link.click();
-    }
-
-    function captureFrame() {
-      if (frames.length >= 3) return;
-
-      const frame = drawStylizedFrame();
-      if (!frame) return;
-
-      frames.push(frame);
-      renderThumbnails();
-
-      statusText.textContent =
-        frames.length < 3
-          ? `${frames.length}/3 captured…`
-          : "strip ready ♡";
-
-      if (frames.length >= 3) {
-        captureBtn.disabled = true;
-      }
-    }
-
-    function clearFrames() {
-      frames.length = 0;
-      captureBtn.disabled = false;
-      statusText.textContent = "ready ♡";
-      renderThumbnails();
-    }
-
-    
-    function downloadStrip() {
-      if (frames.length !== 3) return;
-
-      const stripCanvas = document.createElement("canvas");
-      const ctx = stripCanvas.getContext("2d");
-
-      const frameWidth = 900;
-      const frameHeight = 1125;
-      const margin = 70;
-      const gap = 46;
-      const stripWidth = frameWidth + margin * 2;
-      const stripHeight = margin + 100 + (frameHeight * 3) + (gap * 2) + 170;
-
-      stripCanvas.width = stripWidth;
-      stripCanvas.height = stripHeight;
-
-      // strip background
-      ctx.fillStyle = "#f6f2ee";
-      ctx.fillRect(0, 0, stripWidth, stripHeight);
-      
-      // faint paper tone
-      ctx.fillStyle = "rgba(0,0,0,0.02)";
-      ctx.fillRect(0, 0, stripWidth, stripHeight);
-      
-      // title
-      ctx.fillStyle = "#2f2a2a";
-      ctx.textAlign = "center";
-      ctx.font = '46px "Alte Haas Grotesk Bold V2", serif';
-      ctx.fillText("photobooth", stripWidth / 2, 72);
-      
-      ctx.font = '18px "Inter", sans-serif';
-      ctx.fillStyle = "rgba(47,42,42,0.7)";
-      ctx.fillText("new york memories", stripWidth / 2, 102);
-
-      let loaded = 0;
-      const images = [];
-
-      frames.forEach((src, index) => {
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => {
-          loaded += 1;
-          images[index] = img;
-
-          if (loaded === frames.length) {
-            images.forEach((image, i) => {
-              const x = margin;
-              const y = margin + 150 + i * (frameHeight + gap);
-
-              ctx.save();
-              roundRect(ctx, x, y, frameWidth, frameHeight, 26);
-              ctx.clip();
-              ctx.drawImage(image, x, y, frameWidth, frameHeight);
-              ctx.restore();
-
-              ctx.strokeStyle = "rgba(113, 80, 90, 0.12)";
-              ctx.lineWidth = 2;
-              roundRect(ctx, x, y, frameWidth, frameHeight, 26);
-              ctx.stroke();
-            });
-
-            // grain on strip
-            for (let i = 0; i < 12000; i++) {
-              const x = Math.random() * stripWidth;
-              const y = Math.random() * stripHeight;
-              const alpha = Math.random() * 0.04;
-              const size = Math.random() * 1.2;
-              ctx.fillStyle = `rgba(88, 61, 69, ${alpha})`;
-              ctx.fillRect(x, y, size, size);
-            }
-
-            // footer line
-            ctx.fillStyle = "rgba(74,52,59,0.68)";
-            ctx.font = '20px "Inter", sans-serif';
-            ctx.fillText("no retakes • just feelings", stripWidth / 2, stripHeight - 54);
-
-            const link = document.createElement("a");
-            link.href = stripCanvas.toDataURL("image/png");
-            link.download = "lovers-in-new-york-strip.png";
-            link.click();
-          }
-        };
+        img.onload = () => resolve(img);
+        img.onerror = reject;
         img.src = src;
       });
     }
 
-    function roundRect(ctx, x, y, width, height, radius) {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
+    async function buildStrip(photos, layout) {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const width = 900;
+      const bg = "#f2e6e8";
+      const frameStroke = "#e4d7da";
+
+      if (layout === "vertical3") {
+        canvas.width = width;
+        canvas.height = 2100;
+      } else {
+        canvas.width = width;
+        canvas.height = 1550;
+      }
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const loaded = await Promise.all(photos.map(loadImage));
+
+      if (layout === "vertical3") {
+        const slotW = 640;
+        const slotH = 480;
+        const left = 130;
+        const topStart = 120;
+        const gap = 70;
+
+        loaded.forEach((img, i) => {
+          const y = topStart + i * (slotH + gap);
+          drawPhotoSlot(ctx, img, left, y, slotW, slotH, frameStroke);
+        });
+
+        ctx.fillStyle = "#111";
+        ctx.font = '68px "DM Serif Display", serif';
+        ctx.fillText("with love.", 120, canvas.height - 120);
+      } else {
+        const slotW = 640;
+        const slotH = 540;
+        const left = 130;
+        const topStart = 180;
+        const gap = 90;
+
+        loaded.forEach((img, i) => {
+          const y = topStart + i * (slotH + gap);
+          drawPhotoSlot(ctx, img, left, y, slotW, slotH, frameStroke);
+        });
+
+        ctx.fillStyle = "#111";
+        ctx.font = '68px "DM Serif Display", serif';
+        ctx.fillText("with love.", 120, canvas.height - 120);
+      }
+
+      addPaperNoise(ctx, canvas.width, canvas.height);
+
+      return canvas.toDataURL("image/png");
     }
 
-    captureBtn.addEventListener("click", captureFrame);
-    clearBtn.addEventListener("click", clearFrames);
-    downloadStripBtn.addEventListener("click", downloadStrip);
+    function drawPhotoSlot(ctx, img, x, y, w, h, stroke) {
+      ctx.save();
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(x, y, w, h);
 
-    renderThumbnails();
-    setupCamera();
+      const imgRatio = img.width / img.height;
+      const boxRatio = w / h;
+      let drawW, drawH, drawX, drawY;
+
+      if (imgRatio > boxRatio) {
+        drawH = h;
+        drawW = h * imgRatio;
+        drawX = x - (drawW - w) / 2;
+        drawY = y;
+      } else {
+        drawW = w;
+        drawH = w / imgRatio;
+        drawX = x;
+        drawY = y - (drawH - h) / 2;
+      }
+
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.clip();
+      ctx.drawImage(img, drawX, drawY, drawW, drawH);
+      ctx.restore();
+
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 10;
+      ctx.strokeRect(x, y, w, h);
+    }
+
+    function addPaperNoise(ctx, w, h) {
+      for (let i = 0; i < 10000; i++) {
+        const x = Math.random() * w;
+        const y = Math.random() * h;
+        const a = Math.random() * 0.03;
+        const s = Math.random() * 1.2;
+        ctx.fillStyle = `rgba(90, 70, 78, ${a})`;
+        ctx.fillRect(x, y, s, s);
+      }
+    }
+
+    downloadBtn.addEventListener("click", () => {
+      if (!latestStrip) return;
+      const a = document.createElement("a");
+      a.href = latestStrip;
+      a.download = `wildatsaintlaurent-${selectedLayout}.png`;
+      a.click();
+    });
+
+    updateLayoutSelection();
   </script>
 </body>
 </html>

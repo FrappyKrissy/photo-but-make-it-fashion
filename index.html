@@ -97,32 +97,32 @@
 
     .layout-hotspot {
       position: absolute;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.0);
-      transition: background 0.2s ease, transform 0.2s ease;
-      border: 2px solid transparent;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.02);
+      transition: all 0.2s ease;
+      border: 3px solid transparent;
+      cursor: pointer;
     }
-
+    
     .layout-hotspot:hover,
     .layout-hotspot.selected {
-      background: rgba(232, 205, 216, 0.28);
-      border-color: rgba(92, 55, 67, 0.25);
-      transform: scale(1.02);
+      background: rgba(232, 205, 216, 0.22);
+      border-color: rgba(92, 55, 67, 0.3);
+      box-shadow: 0 0 0 6px rgba(255,255,255,0.2);
     }
-
     /* approximate positions over your screenshot */
     .layout-vertical-3 {
-      left: 7%;
-      top: 13%;
-      width: 25%;
+      left: 0.5%;
+      top: 16%;
+      width: 24%;
       height: 28%;
     }
-
+    
     .layout-vertical-2 {
-      left: 39%;
-      top: 74%;
-      width: 22%;
-      height: 20%;
+      left: 2.5%;
+      top: 39%;
+      width: 23%;
+      height: 24%;
     }
 
     .layout-actions {
@@ -145,23 +145,17 @@
 
     /* -------- CAMERA -------- */
     #camera-screen {
-      background-image: url("./10.png");
+      background-image: url("./10(1).png");
     }
-
-    .camera-ui {
-      position: absolute;
-      inset: 0;
-    }
-
-    /* area inside the white opening of 10.png */
+    
     .camera-frame {
       position: absolute;
-      left: 18%;
-      top: 11%;
-      width: 63%;
-      height: 47%;
+      left: 13.8%;
+      top: 17.5%;
+      width: 61.5%;
+      height: 52.5%;
       overflow: hidden;
-      border-radius: 4px;
+      border-radius: 28px;
       background: #efe7e8;
     }
 
@@ -173,42 +167,40 @@
       display: block;
       filter: grayscale(100%) contrast(1.08) brightness(1.03);
     }
-
     #captureCanvas {
       display: none;
-    }
-
-    .camera-info {
-      position: absolute;
-      top: 62%;
-      width: 100%;
-      text-align: center;
-      color: #493d40;
-      font-size: 22px;
-      font-weight: 600;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.35);
     }
 
     .capture-wrap {
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 7.5%;
+      bottom: 8.2%;
       display: flex;
       justify-content: center;
     }
 
     .capture-btn {
-      width: 42%;
-      max-width: 540px;
-      min-width: 260px;
-      height: 80px;
+      width: 48%;
+      max-width: 520px;
+      min-width: 250px;
+      height: 82px;
       border-radius: 999px;
       background: linear-gradient(180deg, #d8b8bf 0%, #cda8b0 100%);
-      box-shadow: inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -8px 12px rgba(88,49,60,0.22), var(--shadow);
+      box-shadow: inset 0 10px 10px rgba(255,255,255,0.25), inset 0 -8px 12px rgba(88,49,60,0.22), 0 10px 20px rgba(87, 62, 71, 0.25);
       font-size: 32px;
       font-weight: 800;
       color: #000;
+    }
+    
+    .camera-info {
+      position: absolute;
+      top: 73.5%;
+      width: 100%;
+      text-align: center;
+      color: #493d40;
+      font-size: 22px;
+      font-weight: 600;
     }
 
     .back-mini {
@@ -218,23 +210,38 @@
     }
 
     /* -------- RESULT -------- */
-    #result-screen {
-      background-image: url("./11.png");
+   #result-screen {
+      background-image: url("./11(1).png");
     }
-
-    .result-ui {
-      position: absolute;
-      inset: 0;
-    }
-
+    
     .result-strip {
       position: absolute;
-      left: 23.7%;
-      top: 25.8%;
-      width: 11.8%;
-      transform: rotate(0.5deg);
-      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+      left: 50%;
+      top: 56%;
+      width: 28%;
+      max-width: 360px;
+      min-width: 220px;
+      transform: translate(-50%, -50%) rotate(-1deg);
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.18));
       animation: dropStrip 1s ease forwards;
+    }
+    .capture-flash {
+      position: absolute;
+      inset: 0;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 20;
+    }
+    
+    .capture-flash.active {
+      animation: flashShot 0.35s ease;
+    }
+    
+    @keyframes flashShot {
+      0% { opacity: 0; }
+      30% { opacity: 0.85; }
+      100% { opacity: 0; }
     }
 
     @keyframes dropStrip {
@@ -249,16 +256,15 @@
     }
 
     .result-actions {
-      position: absolute;
-      right: 6%;
-      bottom: 6%;
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      max-width: 360px;
-      justify-content: flex-end;
-    }
-
+        position: absolute;
+        left: 50%;
+        bottom: 8%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     .grain {
       position: fixed;
       inset: 0;
@@ -317,6 +323,7 @@
     <button class="small-btn back-mini" id="cameraBackBtn">back</button>
 
     <div class="camera-ui">
+      <div id="captureFlash" class="capture-flash"></div>
       <div class="camera-frame">
         <video id="cameraVideo" autoplay playsinline muted></video>
         <canvas id="captureCanvas"></canvas>
@@ -350,7 +357,7 @@
       camera: document.getElementById("camera-screen"),
       result: document.getElementById("result-screen")
     };
-
+    const captureFlash = document.getElementById("captureFlash");
     const startBtn = document.getElementById("startBtn");
     const layoutBtn = document.getElementById("layoutBtn");
     const layoutBackBtn = document.getElementById("layoutBackBtn");
@@ -429,7 +436,7 @@
       shots = [];
       updateLayoutSelection();
       showScreen("camera");
-      cameraInfo.textContent = `take ${requiredShots} photo${requiredShots > 1 ? "s" : ""}`;
+      cameraInfo.textContent = `take ${requiredShots} photo${requiredShots > 1 ? "s" : ""} ♡`;
       await setupCamera();
     }
 
@@ -511,15 +518,18 @@
 
       return captureCanvas.toDataURL("image/png");
     }
-
     captureBtn.addEventListener("click", async () => {
       const shot = captureShot();
       if (!shot) return;
-
+    
+      captureFlash.classList.remove("active");
+      void captureFlash.offsetWidth;
+      captureFlash.classList.add("active");
+    
       shots.push(shot);
-
+    
       if (shots.length < requiredShots) {
-        cameraInfo.textContent = `${shots.length}/${requiredShots} captured`;
+        cameraInfo.textContent = `photo ${shots.length} captured ✓ — ${requiredShots - shots.length} left`;
       } else {
         cameraInfo.textContent = "processing...";
         stopCamera();
@@ -560,9 +570,9 @@
       const loaded = await Promise.all(photos.map(loadImage));
 
       if (layout === "vertical3") {
-        const slotW = 640;
-        const slotH = 480;
-        const left = 130;
+        const slotW = 700;
+        const slotH = 520;
+        const left = 100;
         const topStart = 120;
         const gap = 70;
 
